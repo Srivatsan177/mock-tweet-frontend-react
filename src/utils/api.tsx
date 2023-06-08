@@ -16,7 +16,7 @@ export async function get(path: string) {
     return response.data;
 }
 
-export async function post(path: string, data: any) {
+export async function post(path: string, data: any = {}) {
     const response = await axiosInstance.post(path, data)
     return response.data
 }

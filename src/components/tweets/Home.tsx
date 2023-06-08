@@ -5,26 +5,30 @@ import { Box, Fab, Grid } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import AddTweet from "./AddTweet";
 import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 export default function Home() {
     const [open, setOpen] = useState(false);
-    const [rows, setRows] = useState([]);
+    // const [rows, setRows] = useState([]);
     const navigate = useNavigate()
-    useEffect(() => {
-        async function fetchData() {
-            try{
-                const data = await get("/");
-                setRows(data);
-            } catch(error){
-                navigate("/login")
-            }
-        }
-        fetchData()
-    }, [open])
+    // useEffect(() => {
+    //     async function fetchData() {
+    //         try{
+    //             const data = await get("/");
+    //             setRows(data);
+    //         } catch(error){
+    //             navigate("/login")
+    //         }
+    //     }
+    //     fetchData()
+    // }, [open])
+    const {data: rows, isLoading, error, mutate: mutateTweet} = useSWR("/", get)
+    if (isLoading) return <>Loading...</>
+    else if (error) navigate("/login")
 
     return (
         <> 
-            {rows.map(row => <Tweet key={row.id} {...row} />)}
+            {rows.map(row => <Tweet key={row.id} {...row} mutate={mutateTweet} />)}
             <Fab
                 sx={{
                     position: "fixed",
